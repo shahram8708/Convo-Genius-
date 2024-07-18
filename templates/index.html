@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convo Genius 🤖 - AI Chat</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #007BFF;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            margin: 0;
+            margin-bottom: 20px;
+        }
+
+        .chat-list {
+            flex: 1;
+            margin-bottom: 10px;
+            overflow-y: auto;
+        }
+
+        .chat-list button {
+            padding: 5px 10px;
+            margin: 5px;
+            text-transform: capitalize;
+            margin-bottom: 10px;
+            background: #0056b3;
+            border: none;
+            color: white;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .chat-list button:hover {
+            background: #003f7f;
+        }
+
+        .delete-all-chats {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-all-chats:hover {
+            background-color: #c82333;
+        }
+
+        .login-button {
+            background-color: #FF6347;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-button:hover {
+            background-color: #FF3323;
+        }
+
+        .explore {
+            background-color: #FFA500;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .explore:hover {
+            background-color: #8A2BE2;
+        }
+
+        .whats-new {
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            border: none;
+            padding: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .whats-new:hover {
+            background-color: #218838;
+        }
+
+        .user-name {
+            background-color: #BA55D3;
+            color: white;
+            border: none;
+            padding: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            text-transform: capitalize;
+            transition: background-color 0.3s ease;
+        }
+
+        .user-name:hover {
+            background-color: #CD5C5C;
+        }
+
+        .new-chat {
+            padding: 10px;
+            background: #004080;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .new-chat:hover {
+            background: #00264d;
+        }
+
+        .container {
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: 95%;
+            margin: auto;
+        }
+
+        .chat-header {
+            background: #007BFF;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5em;
+            border-bottom: 2px solid #0056b3;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            max-width: 80%;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            color: white;
+            border-radius: 15px;
+            word-wrap: break-word;
+            text-align: left;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            color: #333;
+            border-radius: 15px;
+            word-wrap: break-word;
+            text-align: left;
+            width: 100%;
+            max-width: 100%;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .message p {
+            margin: 0;
+            word-wrap: break-word;
+            font-size: 1em;
+            padding: 10px 15px;
+            border-radius: 15px;
+        }
+
+        .message.user p {
+            color: black;
+            background-color: #ddd;
+            border-bottom-right-radius: 0;
+        }
+
+        .message.bot p {
+            color: #333;
+            border-bottom-left-radius: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .chat-footer {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: #fff;
+            border-top: 2px solid #ddd;
+        }
+
+        #chat-form {
+            display: flex;
+            width: 100%;
+            align-items: center;
+        }
+
+        #user_input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #user_input:focus {
+            border-color: #007BFF;
+        }
+
+        button[type="submit"] {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            outline: none;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        button[type="submit"] svg {
+            fill: white;
+        }
+
+        .message-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .message-buttons button {
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .message-buttons .audio-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .main {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        @media (max-width: 1024px) {
+            .main {
+                display: none;
+            }
+
+            body::before {
+                content: "This application is only available on desktop devices.";
+                color: #ffffff;
+                font-size: 24px;
+                text-align: center;
+                padding: 20px;
+                border: 2px solid #3c3c3c;
+                border-radius: 10px;
+                display: block;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: rgba(0, 0, 0, 0.7);
+                width: 80%;
+                max-width: 400px;
+                z-index: 9999;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div class="sidebar">
+            <h2>Chats 💬</h2>
+            <div class="chat-list" id="chat-list"></div>
+            <button class="explore" id="explore-button" style="display: none;">Explore Many AI Tools 🔍</button>
+            <div class="whats-new" id="whats-new" style="display: block;">Explore multiple AI tools after logging in.
+            </div>
+            <button class="login-button" id="login-button">Login 🔐</button>
+            <div class="user-name" style="display: none;"></div>
+            <button class="delete-all-chats" id="delete-all-chats">Delete All Chats 🗑️</button>
+            <button class="new-chat" id="new-chat">New Chat 🆕</button>
+        </div>
+
+        <div class="container">
+            <div class="chat-header">Convo Genius 🤖</div>
+            <div class="chat-box" id="chat-box"></div>
+
+            <div class="chat-footer">
+                <form id="chat-form">
+                    <input type="text" id="user_input" name="user_input" placeholder="Type your message here..."
+                        required>
+                    <button type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M2.01 21l21-9-21-9-.01 8 15 1-15 1z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        let chatIndex = localStorage.getItem('chatIndex') ? parseInt(localStorage.getItem('chatIndex')) : 1;
+        let currentChat = localStorage.getItem('currentChat') || `Chat ${chatIndex}`;
+        const chatBox = document.getElementById('chat-box');
+        const chatList = document.getElementById('chat-list');
+
+        document.getElementById('chat-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const userInputElement = document.getElementById('user_input');
+            const userInput = userInputElement.value.trim();
+
+            if (userInput === '') {
+                return;
+            }
+
+            userInputElement.value = '';
+
+            const userMessage = document.createElement('div');
+            userMessage.classList.add('message', 'user');
+            userMessage.innerHTML = `<p>${escapeHtml(userInput)}</p>`;
+            chatBox.appendChild(userMessage);
+            addMessageButtons(userMessage, userInput);
+
+            saveMessage(currentChat, 'user', userInput);
+
+            const loadingIndicator = document.createElement('div');
+            loadingIndicator.classList.add('message', 'bot');
+            loadingIndicator.innerHTML = `<p>Loading...</p>`;
+            chatBox.appendChild(loadingIndicator);
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({ user_input: userInput })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.user_input && data.bot_response) {
+                        chatBox.removeChild(loadingIndicator);
+
+                        const botMessage = document.createElement('div');
+                        botMessage.classList.add('message', 'bot');
+                        botMessage.innerHTML = data.bot_response;
+                        chatBox.appendChild(botMessage);
+                        addMessageButtons(botMessage, data.bot_response);
+
+                        saveMessage(currentChat, 'bot', data.bot_response);
+
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    chatBox.removeChild(loadingIndicator);
+                });
+        });
+
+        document.getElementById('new-chat').addEventListener('click', () => {
+            chatIndex++;
+            currentChat = `Chat ${chatIndex}`;
+            localStorage.setItem('chatIndex', chatIndex);
+            localStorage.setItem('currentChat', currentChat);
+            chatBox.innerHTML = '';
+            displayChatList();
+        });
+
+        function saveMessage(chatName, sender, message) {
+            let chats = JSON.parse(localStorage.getItem('chats')) || {};
+            if (!chats[chatName]) {
+                chats[chatName] = [];
+            }
+            chats[chatName].push({ sender, message });
+            localStorage.setItem('chats', JSON.stringify(chats));
+        }
+
+        function deleteChat(chatName) {
+            let chats = JSON.parse(localStorage.getItem('chats')) || {};
+            delete chats[chatName];
+            localStorage.setItem('chats', JSON.stringify(chats));
+            displayChatList();
+            if (currentChat === chatName) {
+                currentChat = '';
+                localStorage.setItem('currentChat', currentChat);
+                chatBox.innerHTML = '';
+            }
+        }
+
+        function editChatName(oldName, newName) {
+            let chats = JSON.parse(localStorage.getItem('chats')) || {};
+            if (chats[oldName]) {
+                chats[newName] = chats[oldName];
+                delete chats[oldName];
+                localStorage.setItem('chats', JSON.stringify(chats));
+                displayChatList();
+                if (currentChat === oldName) {
+                    currentChat = newName;
+                    localStorage.setItem('currentChat', currentChat);
+                }
+            }
+        }
+
+        function openChat(chatName) {
+            currentChat = chatName;
+            localStorage.setItem('currentChat', currentChat);
+            loadChat(chatName);
+        }
+
+        function displayChatList() {
+            chatList.innerHTML = '';
+            let chats = JSON.parse(localStorage.getItem('chats')) || {};
+            Object.keys(chats).forEach(chatName => {
+                const chatButton = document.createElement('button');
+                chatButton.textContent = chatName;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = '❌';
+                deleteButton.classList.add('delete-button');
+                deleteButton.addEventListener('click', () => {
+                    deleteChat(chatName);
+                });
+
+                const editButton = document.createElement('button');
+                editButton.textContent = '✏️';
+                editButton.classList.add('edit-button');
+                editButton.addEventListener('click', () => {
+                    const newName = prompt('Enter new name for the chat:');
+                    if (newName && newName.trim() !== '') {
+                        editChatName(chatName, newName.trim());
+                    }
+                });
+
+                chatButton.addEventListener('click', () => {
+                    openChat(chatName);
+                });
+
+                chatButton.appendChild(deleteButton);
+                chatButton.appendChild(editButton);
+
+                chatList.appendChild(chatButton);
+            });
+        }
+        function loadChat(chatName) {
+            chatBox.innerHTML = '';
+            let chats = JSON.parse(localStorage.getItem('chats')) || {};
+            if (chats[chatName]) {
+                chats[chatName].forEach(({ sender, message }) => {
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('message', sender);
+                    messageElement.innerHTML = `<p>${(message)}</p>`;
+                    chatBox.appendChild(messageElement);
+                    addMessageButtons(messageElement, message);
+                });
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        function addMessageButtons(messageElement, messageText) {
+            const buttonContainer = document.createElement('div');
+            buttonContainer.classList.add('message-buttons');
+
+            const copyButton = document.createElement('button');
+            copyButton.innerText = '📋';
+            copyButton.classList.add('copy-button');
+            copyButton.addEventListener('click', () => {
+                navigator.clipboard.writeText(messageText).then(() => {
+                    alert('Message copied to clipboard');
+                });
+            });
+            buttonContainer.appendChild(copyButton);
+
+            const audioButton = document.createElement('button');
+            audioButton.innerText = '🔊';
+            audioButton.classList.add('audio-button');
+            let utterance = null;
+
+            audioButton.addEventListener('click', () => {
+                if (!utterance) {
+                    utterance = new SpeechSynthesisUtterance(messageText);
+                    window.speechSynthesis.speak(utterance);
+                    audioButton.innerText = '⏸️';
+
+                    utterance.onend = () => {
+                        audioButton.innerText = '🔊';
+                        utterance = null;
+                    };
+                } else {
+                    window.speechSynthesis.cancel();
+                    audioButton.innerText = '🔊';
+                    utterance = null;
+                }
+            });
+            buttonContainer.appendChild(audioButton);
+
+            messageElement.appendChild(buttonContainer);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayChatList();
+            if (currentChat) {
+                loadChat(currentChat);
+            }
+        });
+        function deleteAllChats() {
+            localStorage.removeItem('chats');
+            localStorage.removeItem('currentChat');
+            chatBox.innerHTML = '';
+            displayChatList();
+        }
+
+        const deleteAllChatsButton = document.getElementById('delete-all-chats');
+        deleteAllChatsButton.addEventListener('click', deleteAllChats);
+
+        function handleLogin() {
+            window.location.href = '/login';
+        }
+
+        const loginButton = document.getElementById('login-button');
+        loginButton.addEventListener('click', handleLogin);
+
+        window.onload = function () {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            const loginButton = document.getElementById('login-button');
+            const deleteAllChatsButton = document.getElementById('delete-all-chats');
+            const exploreButton = document.getElementById('explore-button');
+            const whatsNew = document.getElementById('whats-new');
+
+            if (!loggedInUser) {
+                loginButton.style.display = 'block';
+                exploreButton.style.display = 'none';
+                whatsNew.style.display = 'block';
+            } else {
+                loginButton.style.display = 'none';
+                exploreButton.style.display = 'block';
+                whatsNew.style.display = 'none';
+
+                const userName = JSON.parse(loggedInUser).username;
+                const userNameDisplay = document.createElement('div');
+                userNameDisplay.classList.add('user-name');
+                userNameDisplay.textContent = `${userName} 👤`;
+                userNameDisplay.style.display = 'block';
+
+                deleteAllChatsButton.parentNode.insertBefore(userNameDisplay, deleteAllChatsButton);
+
+                userNameDisplay.addEventListener('click', () => {
+                    window.location.href = `/user-details`;
+                });
+
+                exploreButton.addEventListener('click', function () {
+                    window.location.href = 'https://ramofficial.netlify.app/project#ai';
+                });
+            }
+        };
+
+    </script>
+</body>
+
+</html>
