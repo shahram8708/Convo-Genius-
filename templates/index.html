@@ -10,10 +10,12 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f2f5;
             margin: 0;
+            display: flex;
+            height: 100vh;
         }
 
         .sidebar {
-            width: 250px;
+            width: 330px;
             background: #007BFF;
             color: white;
             display: flex;
@@ -31,6 +33,22 @@
             flex: 1;
             margin-bottom: 10px;
             overflow-y: auto;
+            border-top: 2px solid #0056b3;
+        }
+
+        .chat-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .chat-list::-webkit-scrollbar-track {
+            background: #007BFF;
+            border-radius: 10px;
+        }
+
+        .chat-list::-webkit-scrollbar-thumb {
+            background-color: #0056b3;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
         }
 
         .chat-list button {
@@ -45,6 +63,9 @@
             cursor: pointer;
             border-radius: 5px;
             transition: background 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .chat-list button:hover {
@@ -146,13 +167,11 @@
         .container {
             background: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
             width: 100%;
-            max-width: 800px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            height: 95%;
+            height: 100%;
             margin: auto;
         }
 
@@ -162,7 +181,6 @@
             padding: 20px;
             text-align: center;
             font-size: 1.5em;
-            border-bottom: 2px solid #0056b3;
         }
 
         .chat-box {
@@ -292,74 +310,136 @@
             border-radius: 50%;
         }
 
-        .main {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            display: flex;
-            height: 100vh;
-        }
+        @media (max-width: 600px) {
 
-        @media (max-width: 1024px) {
-            .main {
-                display: none;
+            .toggle-button {
+                width: 30px;
+                height: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                cursor: pointer;
+                z-index: 1;
+                position: absolute;
+                top: 28px;
+                right: 20px;
             }
 
-            body::before {
-                content: "This application is only available on desktop devices.";
-                color: #ffffff;
-                font-size: 24px;
-                text-align: center;
-                padding: 20px;
-                border: 2px solid #3c3c3c;
-                border-radius: 10px;
-                display: block;
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: rgba(0, 0, 0, 0.7);
-                width: 80%;
-                max-width: 400px;
-                z-index: 9999;
+            .bar {
+                width: 100%;
+                height: 3px;
+                background-color: black;
+                transition: transform 0.4s, opacity 0.4s;
+            }
+
+            .change .bar:nth-child(1) {
+                transform: translateY(9px) rotate(-45deg);
+            }
+
+            .change .bar:nth-child(2) {
+                opacity: 0;
+            }
+
+            .change .bar:nth-child(3) {
+                transform: translateY(-9px) rotate(45deg);
+            }
+
+            .sidebar {
+                display: none;
+                width: 100%;
+            }
+
+            .chat-box {
+                margin-top: 40px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="main">
-        <div class="sidebar">
-            <h2>Chats 💬</h2>
-            <div class="chat-list" id="chat-list"></div>
-            <button class="explore" id="explore-button" style="display: none;">Explore Many AI Tools 🔍</button>
-            <div class="whats-new" id="whats-new" style="display: block;">Explore multiple AI tools after logging in.
-            </div>
-            <button class="login-button" id="login-button">Login 🔐</button>
-            <div class="user-name" style="display: none;"></div>
-            <button class="delete-all-chats" id="delete-all-chats">Delete All Chats 🗑️</button>
-            <button class="new-chat" id="new-chat">New Chat 🆕</button>
+    <div class="sidebar" id="sidebar">
+        <h2>Convo Genius 🤖</h2>
+        <div class="chat-list" id="chat-list"></div>
+        <button class="explore" id="explore-button" style="display: none;">Explore Many AI Tools 🔍</button>
+        <div class="whats-new" id="whats-new" style="display: block;">Explore multiple AI tools after logging in.
+        </div>
+        <button class="login-button" id="login-button">Login 🔐</button>
+        <div class="user-name" style="display: none;"></div>
+        <button class="delete-all-chats" id="delete-all-chats">Delete All Chats 🗑️</button>
+        <button class="new-chat" id="new-chat">New Chat 🆕</button>
+    </div>
+
+    <div class="container" id="container">
+        <div class="chat-box" id="chat-box"></div>
+
+        <div class="chat-footer">
+            <form id="chat-form">
+                <input type="text" id="user_input" name="user_input" placeholder="Type your message here..." required>
+                <button type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path d="M2.01 21l21-9-21-9-.01 8 15 1-15 1z" />
+                    </svg>
+                </button>
+            </form>
         </div>
 
-        <div class="container">
-            <div class="chat-header">Convo Genius 🤖</div>
-            <div class="chat-box" id="chat-box"></div>
-
-            <div class="chat-footer">
-                <form id="chat-form">
-                    <input type="text" id="user_input" name="user_input" placeholder="Type your message here..."
-                        required>
-                    <button type="submit">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                            <path d="M2.01 21l21-9-21-9-.01 8 15 1-15 1z" />
-                        </svg>
-                    </button>
-                </form>
-            </div>
-
-        </div>
+    </div>
+    <div class="toggle-button" onclick="toggleMenu()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
     </div>
     <script>
+        function toggleMenu() {
+            var menuButton = document.querySelector('.toggle-button');
+            menuButton.classList.toggle('change');
+
+            var menuItems = document.getElementById('sidebar');
+            var container = document.getElementById('container');
+
+            if (menuItems.style.display === 'flex') {
+                menuItems.style.display = 'none';
+                container.style.display = 'flex';
+            } else {
+                menuItems.style.display = 'flex';
+                container.style.display = 'none';
+            }
+        }
+
+        function hideSidebar() {
+            var sidebar = document.getElementById('sidebar');
+            var container = document.getElementById('container');
+            var menuButton = document.querySelector('.toggle-button');
+
+            sidebar.style.display = 'none';
+            container.style.display = 'flex';
+            menuButton.classList.remove('change');
+        }
+
+        function addSidebarClickListeners() {
+            var sidebarItems = document.querySelectorAll('#sidebar, #sidebar *');
+            sidebarItems.forEach(function (item) {
+                item.addEventListener('click', function () {
+                    hideSidebar();
+                });
+            });
+        }
+
+        function handleResize() {
+            if (window.innerWidth <= 600) {
+                addSidebarClickListeners();
+            } else {
+                var sidebarItems = document.querySelectorAll('#sidebar, #sidebar *');
+                sidebarItems.forEach(function (item) {
+                    item.removeEventListener('click', hideSidebar);
+                });
+            }
+        }
+
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+
         let chatIndex = localStorage.getItem('chatIndex') ? parseInt(localStorage.getItem('chatIndex')) : 1;
         let currentChat = localStorage.getItem('currentChat') || `Chat ${chatIndex}`;
         const chatBox = document.getElementById('chat-box');
